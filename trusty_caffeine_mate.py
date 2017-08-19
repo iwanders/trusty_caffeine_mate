@@ -6,6 +6,7 @@ import gtk
 import signal
 import subprocess
 import sys
+import os
 
 #  Copyright (c) 2016, Ivor Wanders
 #  MIT License, see the LICENSE.md file.
@@ -27,8 +28,13 @@ class Caffeine:
             self.ind.set_icon_theme_path(
                 "/usr/share/icons/matefaenza/status/22/")
         else:
-            self.ind.set_icon_theme_path(
-                "/usr/share/icons/matefaenzagray/status/22/")
+            # matefaenzagray was renamed to matefaenzadark in Xenial.
+            dark_themes = ["matefaenzagray", "matefaenzadark"]
+            for t in dark_themes:
+                d = os.path.join("/usr", "share", "icons", t, "status", "22")
+                if (os.path.isdir(d)):
+                    self.ind.set_icon_theme_path(d)
+                    break
 
         # create the menu
         self.menu = gtk.Menu()
