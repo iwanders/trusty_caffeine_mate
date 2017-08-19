@@ -2,7 +2,7 @@
 
 Caffeine didn't work for me in Ubuntu MATE 14.04 (Trusty Tahr), I could not be
 bothered with [patching](https://bugs.launchpad.net/caffeine/+bug/1462186) it so
-I implemented it myself.
+I implemented it myself. Also works on Ubuntu MATE 16.04 (Xenial Xerus).
 
 This is a Python application indicator which does exactly what it needs to do:
 it provides a notification icon that allows you to inhibit the screensaver.
