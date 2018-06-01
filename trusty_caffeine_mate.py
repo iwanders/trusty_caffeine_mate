@@ -71,7 +71,10 @@ class Caffeine:
         self.activate_item.set_label("Deactivate")
         self.ind.set_status(appindicator.STATUS_ATTENTION)
 
-        # create the subprocess
+        # Disable dpms
+        subprocess.call(['xset', 's', 'off', '-dpms'])
+
+        # create the subprocess to block mate's screensaver.
         self.proc = subprocess.Popen(['mate-screensaver-command', '-i'],
                                      stdout=subprocess.PIPE)
 
@@ -86,6 +89,7 @@ class Caffeine:
         if (self.proc):
             self.proc.send_signal(signal.SIGINT)
             # Lets assume that the process actually quits from an interrupt.
+            subprocess.call(['xset', 's', 'on', '+dpms'])
 
         # update the menu text
         self.activate_item.set_label("Activate")
