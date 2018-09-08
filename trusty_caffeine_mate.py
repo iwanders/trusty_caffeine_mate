@@ -23,18 +23,26 @@ class Caffeine:
         self.ind.set_status(appindicator.STATUS_ACTIVE)
         self.ind.set_attention_icon("caffeine-cup-full")
 
+        found_theme = False
         # use the appropriate icon
         if (light_theme):
             self.ind.set_icon_theme_path(
                 "/usr/share/icons/matefaenza/status/22/")
         else:
             # matefaenzagray was renamed to matefaenzadark in Xenial.
-            dark_themes = ["matefaenzagray", "matefaenzadark"]
+            # In Bionic it is called Faenza-Dark, install the faenza-icon-theme
+            # package to make it available.
+            dark_themes = ["matefaenzagray", "matefaenzadark", "Faenza-Dark"]
             for t in dark_themes:
                 d = os.path.join("/usr", "share", "icons", t, "status", "22")
                 if (os.path.isdir(d)):
                     self.ind.set_icon_theme_path(d)
+                    found_theme = True
                     break
+
+        if (not found_theme):
+            print("Ubuntu 18.04 doesn't have the icon installed by default.")
+            print("Use 'apt-get install faenza-icon-theme' to install the icon")
 
         # create the menu
         self.menu = gtk.Menu()
