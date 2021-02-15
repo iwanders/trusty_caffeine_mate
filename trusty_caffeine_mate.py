@@ -1,8 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import appindicator  # install via apt-get install python-appindicator
+import gi
+gi.require_version('AppIndicator3', '0.1')
+from gi.repository import AppIndicator3 as appindicator
+from gi.repository import GLib, Gtk
+
 import argparse
-import gtk
 import signal
 import subprocess
 import sys
@@ -11,16 +14,15 @@ import os
 #  Copyright (c) 2016, Ivor Wanders
 #  MIT License, see the LICENSE.md file.
 
-
 class Caffeine:
     def __init__(self, light_theme=False, debug=False, show_quit=False,
                  start_enabled=False):
         # create and setup the indicator
-        self.ind = appindicator.Indicator(
+        self.ind = appindicator.Indicator.new(
                                       "trusty-caffeine",
                                       "caffeine-cup-empty",
-                                      appindicator.CATEGORY_SYSTEM_SERVICES)
-        self.ind.set_status(appindicator.STATUS_ACTIVE)
+                                      appindicator.IndicatorCategory.SYSTEM_SERVICES)
+        self.ind.set_status(appindicator.IndicatorStatus.ACTIVE)
         self.ind.set_attention_icon("caffeine-cup-full")
 
         found_theme = False
@@ -45,16 +47,16 @@ class Caffeine:
             print("Use 'apt-get install faenza-icon-theme' to install the icon")
 
         # create the menu
-        self.menu = gtk.Menu()
+        self.menu = Gtk.Menu()
 
-        self.activate_item = gtk.MenuItem("Activate")
+        self.activate_item = Gtk.MenuItem("Activate")
         self.activate_item.connect("activate", self.toggle)
         self.activate_item.show()
         self.menu.append(self.activate_item)
 
         # add the quit option if need be.
         if (show_quit):
-            self.quit_item = gtk.MenuItem("Quit")
+            self.quit_item = Gtk.MenuItem("Quit")
             self.quit_item.connect("activate", self.quit)
             self.quit_item.show()
             self.menu.append(self.quit_item)
@@ -77,7 +79,7 @@ class Caffeine:
     def activate(self):
         # change the menu text and the indicator state
         self.activate_item.set_label("Deactivate")
-        self.ind.set_status(appindicator.STATUS_ATTENTION)
+        self.ind.set_status(appindicator.IndicatorStatus.ATTENTION)
 
         # Disable dpms
         subprocess.call(['xset', 's', 'off', '-dpms'])
@@ -101,7 +103,7 @@ class Caffeine:
 
         # update the menu text
         self.activate_item.set_label("Activate")
-        self.ind.set_status(appindicator.STATUS_ACTIVE)
+        self.ind.set_status(appindicator.IndicatorStatus.ACTIVE)
         self.activated = False
 
     def toggle(self, widget):
@@ -121,7 +123,7 @@ class Caffeine:
         return True
 
     def main(self):
-        gtk.main()
+        Gtk.main()
 
     def quit(self, widget):
         sys.exit(0)
