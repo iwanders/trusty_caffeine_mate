@@ -19,5 +19,11 @@ It depends on the `python-appindicator` package, so that needs to be installed
 via `apt-get install python-appindicator`. The icon is already available on your
 system.
 
+### Bionic Beaver 18.04
 In Ubuntu Mate 18.04 (Bionic Beaver) the coffee cup icon requires installing the
-`faenza-icon-theme` package (`apt-get install faenza-icon-theme`).
+`faenza-icon-theme` package (`apt-get install faenza-icon-theme`). Use the `bionic`
+branch for a version that's completely compatible with Bionic.
+
+### Focal Fossa 20.04
+The Python module `appindicator` has been deprecated in favour of; `gir1.2-appindicator3-0.1`.
+The coffee cup symbol also still requires the `faenza-icon-theme` to be installed.
