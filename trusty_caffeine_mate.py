@@ -43,20 +43,20 @@ class Caffeine:
                     break
 
         if (not found_theme):
-            print("Ubuntu 18.04 doesn't have the icon installed by default.")
+            print("Ubuntu 18.04 / 20.04 doesn't have the icon installed by default.")
             print("Use 'apt-get install faenza-icon-theme' to install the icon")
 
         # create the menu
         self.menu = Gtk.Menu()
 
-        self.activate_item = Gtk.MenuItem("Activate")
+        self.activate_item = Gtk.MenuItem(label="Activate")
         self.activate_item.connect("activate", self.toggle)
         self.activate_item.show()
         self.menu.append(self.activate_item)
 
         # add the quit option if need be.
         if (show_quit):
-            self.quit_item = Gtk.MenuItem("Quit")
+            self.quit_item = Gtk.MenuItem(label="Quit")
             self.quit_item.connect("activate", self.quit)
             self.quit_item.show()
             self.menu.append(self.quit_item)
@@ -85,7 +85,7 @@ class Caffeine:
         subprocess.call(['xset', 's', 'off', '-dpms'])
 
         # create the subprocess to block mate's screensaver.
-        self.proc = subprocess.Popen(['mate-screensaver-command', '-i'],
+        self.proc = subprocess.Popen(['mate-screensaver-command', '-i', '--reason', "Trusty caffeine mate is active"],
                                      stdout=subprocess.PIPE)
 
         # You could also change this command for example for redshift:
