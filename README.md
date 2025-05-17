@@ -3,7 +3,7 @@
 Caffeine didn't work for me in Ubuntu MATE 14.04 (Trusty Tahr), I could not be
 bothered with [patching](https://bugs.launchpad.net/caffeine/+bug/1462186) it so
 I implemented it myself. Also works on Ubuntu MATE 16.04 (Xenial Xerus),
-Ubuntu MATE 18.04 (Bionic Beaver) and Ubuntu MATE 20.04 (Focal Fossa).
+Ubuntu MATE 18.04 (Bionic Beaver) and Ubuntu MATE 20.04 (Focal Fossa), and Debian 12 (Bookworm).
 
 
 This is a Python application indicator which does exactly what it needs to do:
@@ -24,4 +24,11 @@ branch for a version that's completely compatible with Bionic.
 
 ### Focal Fossa 20.04
 The Python module `appindicator` has been deprecated in favour of; `gir1.2-appindicator3-0.1`.
-The coffee cup symbol also still requires the `faenza-icon-theme` to be installed.
+The coffee cup symbol also still requires the `faenza-icon-theme` to be installed, use the `focal`
+branch for Focal.
+
+### Debian Bookworm 12
+The library `gir1.2-appindicator3-0.1` has been deprecated in favour of `gir1.2-ayatanaappindicator3-0.1`.
+Minor changes to the import statement were necessary, the coffee cup symbol can still be installed with
+the `faenza-icon-theme` package.
+

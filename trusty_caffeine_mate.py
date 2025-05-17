@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import gi
-gi.require_version('AppIndicator3', '0.1')
-from gi.repository import AppIndicator3 as appindicator
+gi.require_version('AyatanaAppIndicator3', '0.1')
+from gi.repository import AyatanaAppIndicator3 as appindicator
 from gi.repository import GLib, Gtk
 
 import argparse
