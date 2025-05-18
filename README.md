@@ -31,4 +31,4 @@ branch for Focal.
 The library `gir1.2-appindicator3-0.1` has been deprecated in favour of `gir1.2-ayatanaappindicator3-0.1`.
 Minor changes to the import statement were necessary, the coffee cup symbol can still be installed with
 the `faenza-icon-theme` package.
-
+(Not yet 100%, it does show the status in `mate-screensaver-command -q` though, is the monitor turned off instead?)

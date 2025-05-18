@@ -74,7 +74,7 @@ class Caffeine:
 
         # if we run in debug mode, call the debug method every 100ms
         if (debug):
-            gtk.timeout_add(100, self.debug)
+            GLib.timeout_add(100, self.debug)
 
     def activate(self):
         # change the menu text and the indicator state
@@ -85,7 +85,9 @@ class Caffeine:
         subprocess.call(['xset', 's', 'off', '-dpms'])
 
         # create the subprocess to block mate's screensaver.
-        self.proc = subprocess.Popen(['mate-screensaver-command', '-i', '--reason', "Trusty caffeine mate is active"],
+        self.proc = subprocess.Popen(['mate-screensaver-command', '-i',
+                                      '--reason', "Trusty caffeine mate is active",
+                                      '-n', 'trusty caffeine mate'],
                                      stdout=subprocess.PIPE)
 
         # You could also change this command for example for redshift:
