@@ -30,4 +30,6 @@ branch for Focal.
 ### Debian Bookworm 12
 The library `gir1.2-appindicator3-0.1` has been deprecated in favour of `gir1.2-ayatanaappindicator3-0.1`.
 Minor changes to the import statement were necessary, the coffee cup symbol can still be installed with
-the `faenza-icon-theme` package.
+the `faenza-icon-theme` package. This was flaky initially as sometimes this script would get started
+before the `mate-screensaver` started, making the `--enabled` flag problematic, this now comes with
+a default delay before it enables of 30 seconds to prevent this race condition.

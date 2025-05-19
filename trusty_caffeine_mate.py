@@ -10,13 +10,16 @@ import signal
 import subprocess
 import sys
 import os
+import time
 
 #  Copyright (c) 2016, Ivor Wanders
 #  MIT License, see the LICENSE.md file.
 
 class Caffeine:
     def __init__(self, light_theme=False, debug=False, show_quit=False,
-                 start_enabled=False):
+                 start_enabled=False, enable_delay=30.0, verbose=False):
+        self.verbose = verbose
+        self.print(f"{time.time()}: startup")
         # create and setup the indicator
         self.ind = appindicator.Indicator.new(
                                       "trusty-caffeine",
@@ -70,19 +73,34 @@ class Caffeine:
 
         # if enabled, activate it.
         if (start_enabled):
-            self.activate()
+            delay_in_ms = int(enable_delay * 1000.0)
+            self.print(f"{time.time()}: start_enabled for {delay_in_ms} ms")
+            # Trigger the timer on the delay.
+            self.enable_timer = GLib.timeout_add(delay_in_ms, self.timed_activate)
 
         # if we run in debug mode, call the debug method every 100ms
         if (debug):
             GLib.timeout_add(100, self.debug)
 
+    def print(self, *args, **kwargs):
+        if self.verbose:
+            print(*args, **kwargs)
+            sys.stdout.flush()
+
+    def timed_activate(self):
+        self.print(f"{time.time()}: timed_activate")
+        GLib.source_remove(self.enable_timer)
+        self.enable_timer = None
+        self.activate()
+
     def activate(self):
+        self.print(f"{time.time()}: activated")
         # change the menu text and the indicator state
         self.activate_item.set_label("Deactivate")
         self.ind.set_status(appindicator.IndicatorStatus.ATTENTION)
 
         # Disable dpms
-        subprocess.call(['xset', 's', 'off', '-dpms', 's', 'noblank'])
+        subprocess.call(['xset', 's', 'off', '-dpms']) #, 's', 'noblank'
 
         # create the subprocess to block mate's screensaver.
         self.proc = subprocess.Popen(['mate-screensaver-command', '-i',
@@ -97,11 +115,12 @@ class Caffeine:
         self.activated = True
 
     def deactivate(self):
+        self.print(f"{time.time()}: deactivated")
         # if we have a process send the interrupt signal
         if (self.proc):
             self.proc.send_signal(signal.SIGINT)
             # Lets assume that the process actually quits from an interrupt.
-            subprocess.call(['xset', 's', 'on', '+dpms', 's', 'blank'])
+            subprocess.call(['xset', 's', 'on', '+dpms']) #, 's', 'blank'
 
         # update the menu text
         self.activate_item.set_label("Activate")
@@ -134,6 +153,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Caffeine indicator')
     parser.add_argument('--debug', default=False, action="store_true",
                         help="Whether to print the status every 100ms.")
+    parser.add_argument('--verbose', default=False, action="store_true",
+                        help="Whether to print state transitions.")
     parser.add_argument('--lighttheme', default=False, action="store_true",
                         help="Use the light theme's icon.")
     parser.add_argument('--showquit', default=False, action="store_true",
@@ -141,11 +162,19 @@ if __name__ == "__main__":
     parser.add_argument('--enabled', default=False, action="store_true",
                         help="Should it start with the inhibit active?.")
 
+    parser.add_argument('--enable-delay', default=30.0,
+                        help="Delay before disabling the screensaver, only used when --enabled is"
+                             "set, defaults to %(default)s", type=float
+                        )
+
     args = parser.parse_args()
 
     indicator = Caffeine(light_theme=args.lighttheme,
                          debug=args.debug,
                          show_quit=args.showquit,
-                         start_enabled=args.enabled)
+                         start_enabled=args.enabled,
+                         enable_delay=args.enable_delay,
+                         verbose=args.verbose,
+                        )
 
     indicator.main()
