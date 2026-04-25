@@ -17,7 +17,8 @@ import time
 
 class Caffeine:
     def __init__(self, light_theme=False, debug=False, show_quit=False,
-                 start_enabled=False, enable_delay=30.0, verbose=False):
+                 start_enabled=False, enable_delay=30.0, verbose=False,
+                 show_trigger=False):
         self.verbose = verbose
         self.print(f"{time.time()}: startup")
         # create and setup the indicator
@@ -57,8 +58,15 @@ class Caffeine:
         self.activate_item.show()
         self.menu.append(self.activate_item)
 
+        if show_trigger:
+            self.trigger_item = Gtk.MenuItem(label="Trigger")
+            self.trigger_item.connect("activate", self.trigger)
+            self.trigger_item.show()
+            self.menu.append(self.trigger_item)
+
+
         # add the quit option if need be.
-        if (show_quit):
+        if show_quit:
             self.quit_item = Gtk.MenuItem(label="Quit")
             self.quit_item.connect("activate", self.quit)
             self.quit_item.show()
@@ -134,6 +142,11 @@ class Caffeine:
         else:
             self.activate()
 
+
+    def trigger(self, widget):
+        self.print(f"{time.time()}: trigger")
+        subprocess.call(['xdg-screensaver', 'activate'])   
+
     def debug(self):
         # prints None if the process is active, exit code otherwise.
         if (self.proc):
@@ -157,24 +170,28 @@ if __name__ == "__main__":
                         help="Whether to print state transitions.")
     parser.add_argument('--lighttheme', default=False, action="store_true",
                         help="Use the light theme's icon.")
-    parser.add_argument('--showquit', default=False, action="store_true",
-                        help="Show the quit option in the menu.")
+
     parser.add_argument('--enabled', default=False, action="store_true",
                         help="Should it start with the inhibit active?.")
-
     parser.add_argument('--enable-delay', default=30.0,
                         help="Delay before disabling the screensaver, only used when --enabled is"
-                             "set, defaults to %(default)s", type=float
+                             " set, defaults to %(default)s", type=float
                         )
+
+    parser.add_argument('--show-quit', default=False, action="store_true",
+                        help="Show the quit option in the menu.")
+    parser.add_argument('--show-trigger', default=False, action="store_true",
+                        help="Show the trigger option in the menu.")
 
     args = parser.parse_args()
 
     indicator = Caffeine(light_theme=args.lighttheme,
                          debug=args.debug,
-                         show_quit=args.showquit,
+                         show_quit=args.show_quit,
                          start_enabled=args.enabled,
                          enable_delay=args.enable_delay,
                          verbose=args.verbose,
+                         show_trigger=args.show_trigger,
                         )
 
     indicator.main()
